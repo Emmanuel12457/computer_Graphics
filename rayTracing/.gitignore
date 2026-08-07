@@ -1,0 +1,10 @@
+# Generated output
+*.ppm
+
+# Compiled binaries
+*.o
+*.out
+a.out
+
+# Editor settings
+.vscode/
