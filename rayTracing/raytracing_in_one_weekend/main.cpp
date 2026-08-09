@@ -6,6 +6,10 @@
 #include "hitable.h"
 #include "lambertian.h"
 #include "dielectric.h"
+#include <fstream>   
+#include <sstream>   
+#include <iomanip>  
+#include <cmath>    
 
 
 
@@ -52,25 +56,58 @@ hitable *random_scene() {
         }
     }
 
-    list[i++] = new sphere(vec3(0,1,0), 1.0, new dielectric(1.5));
+    //list[i++] = new sphere(vec3(0,1,0), 1.0, new dielectric(1.5));
+    list[i++] = new sphere(vec3(0,1,0), 1.0, new lambertian(vec3(1,1,1)));
     list[i++] = new sphere(vec3(-4,1,0), 1.0, new lambertian(vec3(0.4,0.2,1)));
     list[i++] = new sphere(vec3(4,1,0), 1.0, new metal(vec3(0.7,0.6,0.5), 0.0));
 
     return new hitable_list(list, i);
 };
 
-int main(){
-    int nx = 1200;
-    int ny = 800;
-    int ns = 100;
-    std::cout << "P3\n" << nx << " " << ny << "\n255\n";
+int main(int argc, char** argv){
 
+    if(argc != 2){
+       std::cerr << "Usage: ./raytracer <frame>\n";
+        return 1;  
+    }
+    int frame = std :: stoi(argv[1]);
+    int nx = 400;
+    int ny = 267;
+    int ns = 20;
+    int num_frames = 60;
+
+    srand48(12345);
     hitable *world = random_scene();
+    
+    
+    std::ostringstream filename;
+    filename << "frame_"  << std::setfill('0') << std::setw(3) << frame  << ".ppm";
+    std::ofstream outfile(filename.str());
+    outfile << "P3\n" << nx << " " << ny << "\n" << "255\n";
 
-    vec3 lookfrom(13,2,3);
-    vec3 lookat(0,0,0);
-    camera cam(lookfrom, lookat, vec3(0,1,0), 20, float(nx)/float(ny));
+    float angle = frame * (2.0 * M_PI / num_frames);
+    float radius = 13.0;
+    float height = 4.0;
 
+    vec3 lookfrom(
+        radius * cos(angle),
+        height,
+        radius * sin(angle)
+    );
+
+    vec3 lookat(0, 0, 0);
+
+    camera cam(lookfrom, lookat,vec3(0, 1, 0),40,float(nx) / float(ny));
+    vec3 w_dbg = unit_vector(lookfrom - lookat);
+    vec3 u_dbg = unit_vector(cross(vec3(0,1,0), w_dbg));
+    vec3 v_dbg = cross(w_dbg, u_dbg);
+    std::cerr << "Frame " << frame
+            << " lookfrom=(" << lookfrom.x() << "," << lookfrom.y() << "," << lookfrom.z() << ")"
+            << " w=(" << w_dbg.x() << "," << w_dbg.y() << "," << w_dbg.z() << ")"
+            << " u=(" << u_dbg.x() << "," << u_dbg.y() << "," << u_dbg.z() << ")"
+            << " v=(" << v_dbg.x() << "," << v_dbg.y() << "," << v_dbg.z() << ")"
+            << std::endl;
+    srand48(1000 + frame);
     for(int j = ny-1; j>= 0; j--){
         for(int i = 0; i < nx; i++){
             vec3 col(0,0,0);
@@ -85,8 +122,16 @@ int main(){
             int ir = int(255.99 * col[0]);
             int ig = int(255.99 * col[1]);
             int ib = int(255.99 * col[2]);
-            std::cout << ir << " " << ig << " " << ib << "\n";
+            outfile << ir << " " << ig << " " << ib << "\n";
         }
     }
+    outfile.close();
+     std::cout
+        << "Rendered frame "
+        << frame
+        << "/"
+        << num_frames - 1
+        << std::endl;
     return 0;
+
 }
