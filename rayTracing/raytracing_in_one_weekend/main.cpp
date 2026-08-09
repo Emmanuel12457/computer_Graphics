@@ -73,7 +73,7 @@ hitable *random_scene() {
     }
 
     
-    list[i++] = new sphere(vec3(0,1,0), 1.0, new lambertian(vec3(1,1,1)));
+    list[i++] = new sphere(vec3(0,1,0), 1.0, new dielectric(1.5));
     list[i++] = new sphere(vec3(-4,1,0), 1.0, new lambertian(vec3(0.4,0.2,1)));
     list[i++] = new sphere(vec3(4,1,0), 1.0, new metal(vec3(0.7,0.6,0.5), 0.0));
 
