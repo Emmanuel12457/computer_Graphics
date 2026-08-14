@@ -1,0 +1,115 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>sim..ple City</title>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { overflow: hidden; font-family: 'Courier New', monospace; }
+
+        canvas { display: block; width: 100%; height: 100%; }
+
+        #overlay {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            background: #0a0a0a;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 2rem;
+            z-index: 10;
+            transition: opacity 1s ease;
+        }
+
+        #overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        h1 {
+            font-size: 4rem;
+            color: #ffffff;
+            letter-spacing: 0.3em;
+            text-transform: uppercase;
+        }
+
+        .controls {
+            color: #888888;
+            font-size: 0.9rem;
+            line-height: 2.2;
+            text-align: center;
+        }
+
+        .key {
+            color: #ffffff;
+            border: 1px solid #444444;
+            padding: 1px 8px;
+            border-radius: 3px;
+            margin: 0 3px;
+        }
+
+        #startBtn {
+            font-family: 'Courier New', monospace;
+            font-size: 1rem;
+            padding: 0.8rem 3rem;
+            background: transparent;
+            color: #ffffff;
+            border: 1px solid #ffffff;
+            cursor: pointer;
+            letter-spacing: 0.2em;
+            text-transform: uppercase;
+            transition: background 0.3s, color 0.3s;
+        }
+
+        #startBtn:hover {
+            background: #ffffff;
+            color: #0a0a0a;
+        }
+    </style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div id="overlay">
+    <h1>sim..ple City</h1>
+
+    <div class="controls">
+        <span class="key">W</span> Forward &nbsp;
+        <span class="key">S</span> Backward &nbsp;
+        <span class="key">A</span> Rotate Left &nbsp;
+        <span class="key">D</span> Rotate Right <br>
+        <span class="key">1</span> Character Zoom &nbsp;
+        <span class="key">2</span> Third Person &nbsp;
+        <span class="key">3</span> World Pan
+    </div>
+
+    <button id="startBtn">Enter City</button>
+</div>
+
+<script type="importmap">
+{
+    "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.179.1/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.179.1/examples/jsm/",
+        "tw": "https://cs.wellesley.edu/~cs307/threejs/libs/tw-fa25.js"
+    }
+}
+</script>
+
+<script type="module" src="game.js"></script>
+
+<script>
+    document.getElementById('startBtn').addEventListener('click', () => {
+        const overlay = document.getElementById('overlay');
+        overlay.classList.add('fade-out');
+        setTimeout(() => overlay.remove(), 1000);
+    });
+</script>
+
+</body>
+</html>

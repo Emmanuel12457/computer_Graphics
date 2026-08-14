@@ -8,3 +8,4 @@ a.out
 
 # Editor settings
 .vscode/
+node_modules/
